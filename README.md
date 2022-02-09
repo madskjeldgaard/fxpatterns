@@ -1,8 +1,6 @@
 # FXPatterns
 
-### Use patterns with output effect synths.
-
-A slightly longer description of this package
+Use patterns with output effect synths. See help files for more info.
 
 ### Installation
 
