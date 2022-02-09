@@ -1,0 +1,33 @@
+TITLE::PparOutFXLambda
+SUMMARY::Play an event pattern through an effect synth using SuperNova's parallel groups
+CATEGORIES::Streams-Patterns-Events>Patterns>FX
+RELATED::Classes/Pfx
+
+DESCRIPTION::
+
+Plays an event pattern in a group that has an effect synth attached to it's
+tail. The effect synth receives the audio from the source event pattern and may
+then add effects to it.
+
+As opposed to LINK::Classes/Pfx::, the effect synth is controlled by a seperate pattern which makes it
+possible to set the effect synth's parameters as in any other Pbind. Internally,
+this is done using LINK::Classes/Pmono::.
+
+When stopping this pattern, it is possible to set an additional release time to
+allow tailed effects to end before the synths are released.
+
+This is the same as LINK::Classes/POutFXLambda:: but this version of the pattern
+wraps the patterns in a  LINK::Classes/ParGroup:: internally to make it useable
+with the supernova server. See LINK::Classes/POutFXLambda:: for examples.
+
+CLASSMETHODS::
+COPYMETHOD:: POutFX *new
+
+METHOD::prGroup
+ARGUMENT::inpat
+
+EXAMPLES::
+
+CODE::
+// TODO
+::

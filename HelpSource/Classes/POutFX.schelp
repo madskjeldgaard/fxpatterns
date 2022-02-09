@@ -1,0 +1,83 @@
+TITLE::POutFX
+SUMMARY::Play an event pattern through an effect synth
+CATEGORIES::Streams-Patterns-Events>Patterns>FX
+RELATED::Classes/Pfx
+
+DESCRIPTION::
+
+Plays an event pattern in a group that has an effect synth attached to it's
+tail. The effect synth receives the audio from the source event pattern and may
+then add effects to it.
+
+As opposed to LINK::Classes/Pfx::, the effect synth is controlled by a seperate pattern which makes it
+possible to set the effect synth's parameters as in any other Pbind. Internally,
+this is done using LINK::Classes/Pmono::.
+
+When stopping this pattern, it is possible to set an additional release time to
+allow tailed effects to end before the synths are released.
+
+CLASSMETHODS::
+METHOD::new
+ARGUMENT::sourcePattern
+An event pattern. For example a LINK::Classes/Pbind::.
+ARGUMENT::fxDefName
+The SynthDef name of the effect synth you want added to the tail of the group. A
+symbol.
+ARGUMENT::fxArgPairs
+An array of argument pairs. Patterns may be used for the values.
+
+ARGUMENT::releaseTime
+The time it takes the pattern to release the synths after the user stops it.
+This allows for tailed synths to finish their sound before being released.
+
+METHOD::prmakePattern
+Used internallly.
+
+ARGUMENT::sourcePattern
+ARGUMENT::fxPairs
+ARGUMENT::releaseTime
+
+METHOD::prGroup
+Used internallly.
+
+ARGUMENT::inpat
+
+EXAMPLES::
+
+CODE::
+// Make source and fx synths
+(
+
+SynthDef(\sourceSound,{|out=0, freq=100, amp=0.5, dur=1|
+    var env = Env.perc.kr(gate: 1, timeScale: dur);
+    var sig = LFTri.ar(freq) * env;
+    Out.ar(out, sig!2)
+}).add;
+
+SynthDef(\fxsynth,{|out=0, drywet=0.5, amp=0.5, pitch=2|
+    var fadeIn = XLine.ar(start:0.000001, end:1, dur:0.25);
+    var in = fadeIn * In.ar(bus:out, numChannels:2);
+
+    in = PitchShift.ar(in:in, windowSize:0.2, pitchRatio:pitch);
+
+    XOut.ar(out, drywet, in)
+}).add;
+
+)
+
+// Simple pattern fx
+(
+// Source pattern
+var source = Pbind(\dur, 0.25, \degree, Pwhite(0,10));
+
+// Now play the pattern through a pitchshifter
+Pdef(\fxpat,
+    POutFX(
+        sourcePattern: source,
+        fxDefName: \fxsynth,
+        fxArgPairs: [\dur, 1, \pitch, Pwhite(1.0,2.0)],
+        releaseTime: 1
+    )
+).play;
+)
+::
