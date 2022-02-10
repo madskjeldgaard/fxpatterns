@@ -11,13 +11,17 @@ POutFX {
     *prmakePattern{|sourcePattern, fxPairs, releaseTime|
         ^this.prGroup(
             Ppar([
-                sourcePattern,
+                this.prWrapSource(sourcePattern),
                 // FX synth
                 Pmono(
                     *fxPairs
                 )
             ])
         ) <> (groupReleaseTime: releaseTime)
+    }
+
+    *prWrapSource{|source|
+        ^source
     }
 
     // This makes it easier to inherit and change this to ParGroup for supernova versions
@@ -36,13 +40,21 @@ POutFXLambda : POutFX {
 // SuperNova version
 PparOutFXLambda : POutFX {
     *prGroup{|inpat|
-        ^PparGroup(Plambda(inpat))
+        ^Pgroup(Plambda(inpat))
+    }
+
+    *prWrapSource{|source|
+        ^PparGroup(source)
     }
 }
 
 // SuperNova version
 PparOutFX : POutFX {
     *prGroup{|inpat|
-        ^PparGroup(inpat)
+        ^Pgroup(inpat)
+    }
+
+    *prWrapSource{|source|
+        ^PparGroup(source)
     }
 }
